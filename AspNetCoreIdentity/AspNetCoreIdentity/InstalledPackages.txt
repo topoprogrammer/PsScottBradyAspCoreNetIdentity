@@ -1,0 +1,2 @@
+﻿install-package Microsoft.Extensions.Identity.Core -Version 2.1.1
+install-package Dapper
