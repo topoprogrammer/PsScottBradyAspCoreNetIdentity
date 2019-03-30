@@ -6,14 +6,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AspNetCoreIdentity.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AspNetCoreIdentity.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly UserManager<CustomUser> userManager;
+        //private readonly UserManager<CustomUser> userManager;
+        //public HomeController(UserManager<CustomUser> userManager)
+        //{
+        //    this.userManager = userManager;
+        //}
 
-        public HomeController(UserManager<CustomUser> userManager)
+        private readonly UserManager<IdentityUser> userManager;
+
+        public HomeController(UserManager<IdentityUser> userManager)
         {
             this.userManager = userManager;
         }
@@ -23,6 +32,7 @@ namespace AspNetCoreIdentity.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -49,7 +59,7 @@ namespace AspNetCoreIdentity.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Register()
+        public IActionResult Register()
         {
             return View();
         }
@@ -64,7 +74,7 @@ namespace AspNetCoreIdentity.Controllers
 
                 if (user == null)
                 {
-                    user = new CustomUser
+                    user = new IdentityUser
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = model.UserName
@@ -74,6 +84,37 @@ namespace AspNetCoreIdentity.Controllers
                 }
 
                 return View("Success");
+            }
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByNameAsync(model.UserName);
+
+                if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+                {
+                    var identity = new ClaimsIdentity("cookies");
+                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+                    identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+
+                    await HttpContext.SignInAsync("cookies", new ClaimsPrincipal(identity));
+
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", "Invalid UserName or Password");
             }
 
             return View();

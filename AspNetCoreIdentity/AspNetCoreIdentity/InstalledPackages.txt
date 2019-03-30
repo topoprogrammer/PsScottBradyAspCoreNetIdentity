@@ -1,2 +1,7 @@
-﻿install-package Microsoft.Extensions.Identity.Core -Version 2.1.1
+﻿install-package Microsoft.Extensions.Identity.Core
 install-package Dapper
+install-package Microsoft.AspNetCore.Authentication.Cookies
+install-package Microsoft.Extensions.Identity.Stores 
+install-package Microsoft.AspNetCore.Identity.EntityFrameworkCore
+install-package Microsoft.EntityFrameworkCore.SqlServer
+install-package Microsoft.EntityFrameworkCore.Design
