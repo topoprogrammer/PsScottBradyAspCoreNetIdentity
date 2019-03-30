@@ -5,11 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AspNetCoreIdentity.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace AspNetCoreIdentity.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly UserManager<CustomUser> userManager;
+
+        public HomeController(UserManager<CustomUser> userManager)
+        {
+            this.userManager = userManager;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -39,5 +47,37 @@ namespace AspNetCoreIdentity.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByNameAsync(model.UserName);
+
+                if (user == null)
+                {
+                    user = new CustomUser
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        UserName = model.UserName
+                    };
+
+                    var result = await userManager.CreateAsync(user, model.Password);
+                }
+
+                return View("Success");
+            }
+
+            return View();
+        }
+
     }
 }

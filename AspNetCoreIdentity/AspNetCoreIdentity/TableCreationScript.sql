@@ -1,7 +1,7 @@
-USE [PluralsightDemo]
+USE [AspIdentityCoreDb]
 GO
 
-CREATE TABLE [dbo].[PluralsightUsers](
+CREATE TABLE [dbo].[CustomUsers](
 	[Id] [nvarchar](450) NOT NULL,
 	[UserName] [nvarchar](256) NULL,
 	[NormalizedUserName] [nvarchar](256) NULL,

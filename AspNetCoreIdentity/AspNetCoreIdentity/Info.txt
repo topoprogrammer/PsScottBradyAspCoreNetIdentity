@@ -1,2 +1,2 @@
 ﻿Module 3. Implementing the Nuts and Bolts of Asp.Net Core Identity
-Chapter 6. Demo: Basic User Registration
+Chapter 6. Demo: Authentication using ASP.NET Core and ASP.NET Core Identity

@@ -18,7 +18,7 @@ namespace AspNetCoreIdentity
             using (var connection = GetOpenConnection())
             {
                 await connection.ExecuteAsync(
-                    "insert into PluralsightUsers([Id]," +
+                    "insert into CustomUsers([Id]," +
                     "[UserName]," +
                     "[NormalizedUserName]," +
                     "[PasswordHash]) " +
@@ -50,7 +50,7 @@ namespace AspNetCoreIdentity
             using (var connection = GetOpenConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<CustomUser>(
-                    "select * From PluralsightUsers where Id = @id",
+                    "select * From CustomUsers where Id = @id",
                     new { id = userId });
             }
         }
@@ -60,7 +60,7 @@ namespace AspNetCoreIdentity
             using (var connection = GetOpenConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<CustomUser>(
-                    "select * From PluralsightUsers where NormalizedUserName = @name",
+                    "select * From CustomUsers where NormalizedUserName = @name",
                     new { name = normalizedUserName });
             }
         }
@@ -97,7 +97,7 @@ namespace AspNetCoreIdentity
             using (var connection = GetOpenConnection())
             {
                 await connection.ExecuteAsync(
-                    "update PluralsightUsers " +
+                    "update CustomUsers " +
                     "set [Id] = @id," +
                     "[UserName] = @userName," +
                     "[NormalizedUserName] = @normalizedUserName," +
@@ -117,7 +117,7 @@ namespace AspNetCoreIdentity
 
         private static DbConnection GetOpenConnection()
         {
-            var connection = new SqlConnection(@"Data Source=.\sqlexpress;Initial Catalog=AspIdentityDbWeb;Integrated Security=True");
+            var connection = new SqlConnection(@"Data Source=.\sqlexpress;Initial Catalog=AspIdentityCoreDb;Integrated Security=True");
             connection.Open();
             return connection;
         }
