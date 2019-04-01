@@ -1,2 +1,3 @@
-﻿Module 3. Implementing the Nuts and Bolts of Asp.Net Core Identity
-Chapter 6. When to Extend IdentityUser
+﻿Module 5. Implementing Secure User Management
+Chapter 4. Password Reset: The Basics
+
