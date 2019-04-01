@@ -30,17 +30,49 @@ namespace AspNetCoreIdentity
 
             //services.AddIdentityCore<IdentityUser>(options => { });
             //services.AddScoped<IUserStore<IdentityUser>, CustomIdentityStore>();
-            const string connectionString =
-                @"Data Source=.\sqlexpress;Initial Catalog=AspIdentityCoreDbDefault;Integrated Security=True";
-            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            services.AddDbContext<IdentityDbContext>(opt => opt.UseSqlServer(connectionString,
-                sql => sql.MigrationsAssembly(migrationAssembly)));
-            services.AddIdentityCore<IdentityUser>(options => { });
-            services.AddScoped<IUserStore<IdentityUser>,
-                UserOnlyStore<IdentityUser, IdentityDbContext>>();
 
-            services.AddAuthentication("cookies")
-                .AddCookie("cookies", options => options.LoginPath = "/Home/Login");
+            //Default unextended identity user
+            //const string connectionString =
+            //    @"Data Source=.\sqlexpress;Initial Catalog=AspIdentityCoreDbDefault;Integrated Security=True";
+            //var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            //services.AddDbContext<IdentityDbContext>(opt => opt.UseSqlServer(connectionString,
+            //    sql => sql.MigrationsAssembly(migrationAssembly)));
+            //services.AddIdentityCore<IdentityUser>(options => { });
+            //services.AddScoped<IUserStore<IdentityUser>,
+            //    UserOnlyStore<IdentityUser, IdentityDbContext>>();
+
+
+            //Extended identity user 
+            //const string connectionString =
+            //  @"Data Source=.\sqlexpress;Initial Catalog=AspIdentityCoreDbCustom;Integrated Security=True";
+            //var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            //services.AddDbContext<CustomDbContext>(opt => opt.UseSqlServer(connectionString,
+            //    sql => sql.MigrationsAssembly(migrationAssembly)));       
+            ////Just Core funcionality without userRoles
+            ////***************************************************
+            //services.AddIdentityCore<CustomUser>(options => { });
+            ////***************************************************
+            //services.AddScoped<IUserStore<CustomUser>,
+            //    UserOnlyStore<CustomUser, CustomDbContext>>();
+            //services.AddAuthentication("cookies")
+            //    .AddCookie("cookies", options => options.LoginPath = "/Home/Login");
+
+
+            const string connectionString =
+             @"Data Source=.\sqlexpress;Initial Catalog=AspIdentityCoreDbCustom;Integrated Security=True";
+            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            services.AddDbContext<CustomDbContext>(opt => opt.UseSqlServer(connectionString,
+                sql => sql.MigrationsAssembly(migrationAssembly)));
+            //Full funcionality of identity
+            //***************************************************
+            services.AddIdentity<CustomUser, IdentityRole>(options => { })
+                .AddEntityFrameworkStores<CustomDbContext>();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<CustomUser>, CustomUserPrincipalFactory>();
+
+            services.ConfigureApplicationCookie(options => options.LoginPath = "/Home/Login");
+            //***************************************************
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

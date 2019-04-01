@@ -14,18 +14,24 @@ namespace AspNetCoreIdentity.Controllers
 {
     public class HomeController : Controller
     {
-        //private readonly UserManager<CustomUser> userManager;
-        //public HomeController(UserManager<CustomUser> userManager)
+        private readonly UserManager<CustomUser> userManager;
+        private readonly IUserClaimsPrincipalFactory<CustomUser> claimsPrincipalFactory;
+        private readonly SignInManager<CustomUser> signInManager;
+
+        public HomeController(UserManager<CustomUser> userManager,
+            IUserClaimsPrincipalFactory<CustomUser> claimsPrincipalFactory,
+            SignInManager<CustomUser> signInManager)
+        {
+            this.userManager = userManager;
+            this.claimsPrincipalFactory = claimsPrincipalFactory;
+            this.signInManager = signInManager;
+        }
+
+        //private readonly UserManager<IdentityUser> userManager;
+        //public HomeController(UserManager<IdentityUser> userManager)
         //{
         //    this.userManager = userManager;
         //}
-
-        private readonly UserManager<IdentityUser> userManager;
-
-        public HomeController(UserManager<IdentityUser> userManager)
-        {
-            this.userManager = userManager;
-        }
 
         public IActionResult Index()
         {
@@ -74,7 +80,7 @@ namespace AspNetCoreIdentity.Controllers
 
                 if (user == null)
                 {
-                    user = new IdentityUser
+                    user = new CustomUser
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = model.UserName
@@ -101,16 +107,34 @@ namespace AspNetCoreIdentity.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByNameAsync(model.UserName);
+                //**********************************************************************************************
+                //var user = await userManager.FindByNameAsync(model.UserName);
 
-                if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+                //if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+                //{
+                //    //Identity with core funcionality 
+                //    //***************************************************************
+                //    //var identity = new ClaimsIdentity("cookies");
+                //    //identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+                //    //identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+                //    //await HttpContext.SignInAsync("cookies", new ClaimsPrincipal(identity));
+                //    //***************************************************************
+
+                //    //Identity with full funcionality 
+                //    //***************************************************************
+                //    var identity = await claimsPrincipalFactory.CreateAsync(user);
+                //    await HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(identity));
+                //    //***************************************************************
+                //    return RedirectToAction("Index");
+                //}
+                //**********************************************************************************************
+
+
+                var signInResult = await signInManager.PasswordSignInAsync(model.UserName, model.Password,
+                    false, false);
+
+                if (signInResult.Succeeded)
                 {
-                    var identity = new ClaimsIdentity("cookies");
-                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
-                    identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-
-                    await HttpContext.SignInAsync("cookies", new ClaimsPrincipal(identity));
-
                     return RedirectToAction("Index");
                 }
 
