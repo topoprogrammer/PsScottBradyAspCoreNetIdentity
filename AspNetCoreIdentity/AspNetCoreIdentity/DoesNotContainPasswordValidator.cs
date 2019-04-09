@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace PluralsightDemo
+namespace AspNetCoreIdentity
 {
     public class DoesNotContainPasswordValidator<TUser> : IPasswordValidator<TUser> where TUser : class
     {

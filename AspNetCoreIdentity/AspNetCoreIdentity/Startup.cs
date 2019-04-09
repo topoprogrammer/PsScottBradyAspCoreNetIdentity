@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Reflection;
 
 
@@ -65,10 +66,30 @@ namespace AspNetCoreIdentity
                 sql => sql.MigrationsAssembly(migrationAssembly)));
             //Full funcionality of identity
             //***************************************************
-            services.AddIdentity<CustomUser, IdentityRole>(options => { })
-                .AddEntityFrameworkStores<CustomDbContext>();
+            services.AddIdentity<CustomUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+                options.Tokens.EmailConfirmationTokenProvider = "emailconf";
+
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredUniqueChars = 4;
+
+                options.User.RequireUniqueEmail = true;
+
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+            })
+            .AddEntityFrameworkStores<CustomDbContext>()
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<EmailConfirmationTokenProvider<CustomUser>>("emailconf")
+            .AddPasswordValidator<DoesNotContainPasswordValidator<CustomUser>>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<CustomUser>, CustomUserPrincipalFactory>();
+
+            services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromHours(3));
+
+            services.Configure<EmailConfirmationTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromDays(2));
 
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Home/Login");
             //***************************************************

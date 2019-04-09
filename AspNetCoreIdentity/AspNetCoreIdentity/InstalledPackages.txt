@@ -5,3 +5,4 @@ install-package Microsoft.Extensions.Identity.Stores
 install-package Microsoft.AspNetCore.Identity.EntityFrameworkCore
 install-package Microsoft.EntityFrameworkCore.SqlServer
 install-package Microsoft.EntityFrameworkCore.Design
+Install-Package Microsoft.EntityFrameworkCore.Tools.DotNet -Version 2.0.3
