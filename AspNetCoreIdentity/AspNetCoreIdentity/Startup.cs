@@ -94,6 +94,13 @@ namespace AspNetCoreIdentity
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Home/Login");
             //***************************************************
 
+            services.AddAuthentication().AddGoogle("google", options =>
+            {
+                options.ClientId = "827500665401-vegegl0ofubq7hi9c82b08aurhntuckr.apps.googleusercontent.com";
+                options.ClientSecret = "PvVinr4iBqQsmJU0mUuyVvXd";
+                options.SignInScheme = IdentityConstants.ExternalScheme;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

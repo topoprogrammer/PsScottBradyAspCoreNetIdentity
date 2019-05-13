@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PluralsightDemo.Models
+namespace AspNetCoreIdentity.Models
 {
     public class TwoFactorModel
     {
