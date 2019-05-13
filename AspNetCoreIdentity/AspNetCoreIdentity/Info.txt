@@ -1,3 +1,5 @@
 ﻿Module 5. Implementing Secure User Management
 Chapter 4. Demo: Two steps 
 
+User: topoprogrammer@gmail.com
+Password: Password1!
